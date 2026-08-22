@@ -4,11 +4,52 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 const instagram = "https://www.instagram.com/hetberkenbos/";
-const seasons = ["Lente", "Zomer", "Herfst", "Winter"];
-const seasonAssets = ["spring", "summer", "autumn", "winter"];
 const asset = (name: string) => `${import.meta.env.BASE_URL}${name}`;
 
-function BookingForm({ compact = false }: { compact?: boolean }) {
+const seasons = [
+  {
+    id: "lente",
+    asset: "spring",
+    number: "01",
+    title: "Alles begint\nopnieuw.",
+    lead: "Zacht licht, jong groen en een ontbijt waarvoor je rustig blijft zitten.",
+    detail: "De ramen open. Vogels in de berken. Een ochtend zonder planning.",
+    note: "Bloesem · Fris · Licht",
+  },
+  {
+    id: "zomer",
+    asset: "summer",
+    number: "02",
+    title: "De dag mag\nlang duren.",
+    lead: "Buiten leven, dwalen door West-Friesland en terugkomen wanneer het licht goud wordt.",
+    detail: "Een boek in de tuin, een route langs de lintdorpen en nergens haast voor.",
+    note: "Buiten · Goud · Vrij",
+  },
+  {
+    id: "herfst",
+    asset: "autumn",
+    number: "03",
+    title: "Binnen wordt\nhet warmer.",
+    lead: "Kleur in het bos, iets warms op tafel en de stilte van het land na de zomer.",
+    detail: "Lange wandelingen. Modder aan je schoenen. Daarna thuiskomen in het barnhouse.",
+    note: "Aards · Warm · Langzaam",
+  },
+  {
+    id: "winter",
+    asset: "winter",
+    number: "04",
+    title: "Stilte krijgt\nalle ruimte.",
+    lead: "Heldere lucht, kale takken en een verblijf dat voelt als een kleine wereld van jezelf.",
+    detail: "Niets hoeven. Alleen het zachte winterlicht dat door de kamer schuift.",
+    note: "Stil · Helder · Dichtbij",
+  },
+];
+
+function Arrow() {
+  return <span aria-hidden="true">↗</span>;
+}
+
+function BookingForm() {
   const today = new Date().toISOString().split("T")[0];
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -17,265 +58,152 @@ function BookingForm({ compact = false }: { compact?: boolean }) {
   };
 
   return (
-    <form className={`booking-form ${compact ? "booking-form-compact" : ""}`} onSubmit={submit}>
-      <label>
-        <span>Aankomst</span>
-        <input type="date" name="arrival" min={today} aria-label="Aankomstdatum" />
-      </label>
-      <label>
-        <span>Vertrek</span>
-        <input type="date" name="departure" min={today} aria-label="Vertrekdatum" />
-      </label>
-      <label>
-        <span>Gasten</span>
-        <select name="guests" defaultValue="2" aria-label="Aantal gasten">
-          <option value="1">1 gast</option>
-          <option value="2">2 gasten</option>
-          <option value="3">3 gasten</option>
-          <option value="4">4 gasten</option>
-        </select>
-      </label>
-      <button type="submit">Bekijk beschikbaarheid <span aria-hidden="true">↗</span></button>
+    <form className="booking" onSubmit={submit}>
+      <label><span>Aankomst</span><input type="date" name="arrival" min={today} aria-label="Aankomstdatum" /></label>
+      <label><span>Vertrek</span><input type="date" name="departure" min={today} aria-label="Vertrekdatum" /></label>
+      <label><span>Gasten</span><select name="guests" defaultValue="2" aria-label="Aantal gasten"><option value="1">1 gast</option><option value="2">2 gasten</option><option value="3">3 gasten</option><option value="4">4 gasten</option></select></label>
+      <button type="submit">Vraag je verblijf aan <Arrow /></button>
     </form>
   );
 }
 
 export default function Home() {
   const [progress, setProgress] = useState(0);
-  const [heroOffset, setHeroOffset] = useState(0);
   const [activeSeason, setActiveSeason] = useState(0);
-  const [seasonPosition, setSeasonPosition] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [headerCompact, setHeaderCompact] = useState(false);
-  const [showMobileBooking, setShowMobileBooking] = useState(false);
+  const [compactHeader, setCompactHeader] = useState(false);
   const seasonRefs = useRef<(HTMLElement | null)[]>([]);
-  const journeyRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const revealObserver = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("visible")),
+      { threshold: 0.14 },
+    );
+    document.querySelectorAll("[data-reveal]").forEach((element) => revealObserver.observe(element));
+
+    const seasonObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSeason(Number((visible.target as HTMLElement).dataset.season));
+      },
+      { rootMargin: "-33% 0px -33% 0px", threshold: [0.05, 0.3, 0.65] },
+    );
+    seasonRefs.current.forEach((element) => element && seasonObserver.observe(element));
+
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       setProgress(max > 0 ? window.scrollY / max : 0);
-      setHeroOffset(Math.min(window.scrollY * 0.18, 150));
-      setHeaderCompact(window.scrollY > 48);
-      setShowMobileBooking(window.scrollY > window.innerHeight * 0.78);
-
-      const journey = journeyRef.current;
-      if (journey) {
-        const focusLine = window.innerHeight * 0.52;
-        let position = 0;
-        seasonRefs.current.forEach((section, index) => {
-          if (!section) return;
-          const rect = section.getBoundingClientRect();
-          if (focusLine >= rect.top && focusLine <= rect.bottom) {
-            const local = Math.max(0, Math.min(1, (focusLine - rect.top) / rect.height));
-            const blend = index < seasons.length - 1 ? Math.max(0, Math.min(1, (local - 0.48) / 0.42)) : 0;
-            position = index + blend;
-          }
-        });
-        setSeasonPosition(position);
-      }
+      setCompactHeader(window.scrollY > 60);
     };
-    const revealObserver = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
-      { threshold: 0.14 },
-    );
-    document.querySelectorAll("[data-reveal]").forEach((el) => revealObserver.observe(el));
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => { revealObserver.disconnect(); window.removeEventListener("scroll", onScroll); };
-  }, []);
 
-  const treeOpacity = (index: number) => Math.max(0, Math.min(1, 1 - Math.abs(seasonPosition - index)));
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const current = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (current) setActiveSeason(Number((current.target as HTMLElement).dataset.season));
-      },
-      { rootMargin: "-34% 0px -34% 0px", threshold: [0.05, 0.3, 0.6] },
-    );
-    seasonRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
+    return () => {
+      revealObserver.disconnect();
+      seasonObserver.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   return (
-    <main>
-      <div className="progress" aria-hidden="true"><span style={{ transform: `scaleX(${progress})` }} /></div>
+    <main className={`site season-${activeSeason}`}>
+      <div className="progress" aria-hidden="true"><i style={{ transform: `scaleX(${progress})` }} /></div>
 
-      <header className={`site-header${menuOpen ? " menu-open" : ""}${headerCompact ? " is-compact" : ""}`}>
-        <a className="brand-logo" href="#top" aria-label="Het Berkenbos, naar boven">
-          <img src={asset("berkenbos-logo-white.png")} alt="B&B Het Berkenbos" />
-        </a>
-        <nav className="desktop-nav" aria-label="Hoofdnavigatie">
-          <a href="#overnachten">Overnachten</a><a href="#kamers">Kamers</a><a href="#omgeving">Omgeving</a><a href="#verhaal">Het Berkenbos</a><a href="#contact">Contact</a>
-        </nav>
-        <a className="header-cta" href={instagram} target="_blank" rel="noreferrer">Boek je verblijf <span>↗</span></a>
-        <button className="menu-toggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-nav" onClick={() => setMenuOpen((value) => !value)}>
-          <span>{menuOpen ? "Sluiten" : "Menu"}</span><i aria-hidden="true" />
-        </button>
-        <div className="mobile-nav" id="mobile-nav" aria-hidden={!menuOpen}>
-          <nav>
-            <a href="#overnachten" onClick={() => setMenuOpen(false)}>Overnachten</a><a href="#kamers" onClick={() => setMenuOpen(false)}>Kamers</a><a href="#omgeving" onClick={() => setMenuOpen(false)}>Omgeving</a><a href="#verhaal" onClick={() => setMenuOpen(false)}>Het Berkenbos</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
-          </nav>
-        </div>
+      <header className={`${compactHeader ? "compact " : ""}${menuOpen ? "open" : ""}`}>
+        <a className="logo" href="#top" aria-label="B&B Het Berkenbos, naar boven"><img src={asset("berkenbos-logo-white.png")} alt="B&B Het Berkenbos" /></a>
+        <nav className="main-nav" aria-label="Hoofdnavigatie"><a href="#verblijf">Het verblijf</a><a href="#seizoenen">Vier seizoenen</a><a href="#omgeving">Hauwert</a></nav>
+        <a className="nav-book" href="#boeken">Boek je rust <Arrow /></a>
+        <button className="menu-button" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen((value) => !value)}>{menuOpen ? "Sluit" : "Menu"}<i /></button>
+        <div className="mobile-menu" id="mobile-menu" aria-hidden={!menuOpen}><nav><a href="#verblijf" onClick={() => setMenuOpen(false)}>Het verblijf</a><a href="#seizoenen" onClick={() => setMenuOpen(false)}>Vier seizoenen</a><a href="#omgeving" onClick={() => setMenuOpen(false)}>Hauwert</a><a href="#boeken" onClick={() => setMenuOpen(false)}>Boek je rust</a></nav></div>
       </header>
 
       <section className="hero" id="top">
-        <div className="hero-image" style={{ backgroundImage: `url("${asset("hero.jpg")}")`, transform: `translate3d(0, ${heroOffset}px, 0) scale(1.08)` }} aria-hidden="true" />
-        <div className="hero-shade" aria-hidden="true" />
-        <div className="hero-content">
-          <p className="eyebrow">Bed &amp; Barn · Hauwert</p>
-          <h1>Even helemaal <em>weg.</em></h1>
-          <p>Overnachten tussen de rust en het groen van Het Berkenbos.</p>
-          <div className="hero-actions">
-            <a className="button button-light" href="#beschikbaarheid">Bekijk beschikbaarheid <span>↗</span></a>
-            <a className="button button-quiet" href="#verhaal">Ontdek Het Berkenbos <span>↓</span></a>
-          </div>
-        </div>
-        <div className="hero-booking" id="beschikbaarheid"><BookingForm /></div>
-        <a className="hero-scroll-cue" href="#verhaal"><span>Volg de berk</span><i aria-hidden="true" /></a>
+        <div className="hero-media" style={{ backgroundImage: `url("${asset("hero.jpg")}")` }} aria-hidden="true" />
+        <div className="hero-overlay" aria-hidden="true" />
+        <div className="hero-kicker"><span>Bed &amp; Barn</span><span>Hauwert · Noord-Holland</span></div>
+        <div className="hero-title"><p>Een verblijf in het ritme van buiten</p><h1>Vier seizoenen.<br /><em>Eén plek.</em></h1></div>
+        <a className="hero-discover" href="#intro"><span>Ontdek<br />Het Berkenbos</span><i>↓</i></a>
+        <div className="hero-booking"><BookingForm /></div>
       </section>
 
-      <div
-        ref={journeyRef}
-        className={`season-journey season-${activeSeason}`}
-      >
-        <div className="tree-stage" aria-hidden="true">
-          <div className="tree-sticky">
-            <div className="seasonal-sky">
-              <i className="sky-layer sky-spring" />
-              <i className="sky-layer sky-summer" />
-              <i className="sky-layer sky-autumn" />
-              <i className="sky-layer sky-winter" />
-            </div>
-            <div className="tree-portrait">
-              {seasons.map((season, index) => (
-                <img
-                  key={season}
-                  className={activeSeason === index ? "active" : ""}
-                  style={{ opacity: treeOpacity(index) }}
-                  src={asset(`tree-${seasonAssets[index]}.png`)}
-                  alt=""
-                />
-              ))}
-            </div>
-            <div className="seasonal-motion">
-              {seasonAssets.map((season) => (
-                <div className={`season-motion motion-${season}`} key={season}>
-                  {Array.from({ length: 10 }).map((_, index) => <i key={index} />)}
-                </div>
-              ))}
-            </div>
+      <section className="intro" id="intro">
+        <div className="intro-index">00 / Het gevoel</div>
+        <div className="intro-copy" data-reveal>
+          <p>Geen groot hotel. Geen vast programma.</p>
+          <h2>Een kleine wereld<br />tussen de <em>berken.</em></h2>
+          <div><p>Het Berkenbos is een eigen barnhouse in Hauwert, omringd door 3.000 m² groen. Een plek die met ieder seizoen van karakter verandert.</p><a href="#verblijf">Bekijk het verblijf <Arrow /></a></div>
+        </div>
+        <div className="intro-images" data-reveal>
+          <figure><img src={asset("suite.jpg")} alt="Het rustige interieur van het barnhouse" /></figure>
+          <figure><img src={asset("breakfast.jpg")} alt="Ontbijt buiten bij Het Berkenbos" /></figure>
+          <span>Rust is hier<br />geen luxe maar ritme.</span>
+        </div>
+      </section>
+
+      <section className="season-journey" id="seizoenen">
+        <div className="season-stage" aria-hidden="true">
+          <div className="season-sky"><i className="sky spring" /><i className="sky summer" /><i className="sky autumn" /><i className="sky winter" /></div>
+          <div className="tree-frame">
+            {seasons.map((season, index) => <img key={season.id} className={activeSeason === index ? "active" : ""} src={asset(`tree-${season.asset}.png`)} alt="" />)}
           </div>
+          <div className="season-weather">
+            {seasons.map((season, index) => <div key={season.id} className={`weather weather-${season.asset}${activeSeason === index ? " active" : ""}`}>{Array.from({ length: 14 }).map((_, item) => <i key={item} />)}</div>)}
+          </div>
+          <div className="tree-caption"><span>Dezelfde berk</span><span>Een ander gevoel</span></div>
         </div>
 
-        <nav className="season-rail" aria-label="Ga naar seizoen">
-          {seasons.map((season, index) => (
-            <a key={season} href={`#season-${seasonAssets[index]}`} className={activeSeason === index ? "active" : ""} aria-label={`Ga naar ${season}`}>
-              <i /><span>{season}</span>
-            </a>
-          ))}
+        <nav className="season-nav" aria-label="Kies een seizoen">
+          {seasons.map((season, index) => <a key={season.id} href={`#${season.id}`} className={activeSeason === index ? "active" : ""}><span>{season.number}</span>{season.id}</a>)}
         </nav>
 
-        <section
-          id="verhaal"
-          className="season-section spring-section"
-          data-season="0"
-          ref={(el) => { seasonRefs.current[0] = el; }}
-        >
-          <span className="season-anchor" id="season-spring" />
-          <div className="season-copy reveal" data-reveal>
-            <p className="eyebrow">Lente · Ontdek Het Berkenbos</p>
-            <h2>Wakker worden<br /><em>tussen het groen.</em></h2>
-            <p>In Hauwert staat een barnhouse met een tuin van 3.000 m² en een klein bos van zilverberken. Een plek waar de ochtend zacht begint en niets haast heeft.</p>
-          </div>
-          <div className="spring-gallery" aria-label="Sfeerbeelden van Het Berkenbos">
-            <figure className="gallery-main reveal" data-reveal><img src={asset("suite.jpg")} alt="Sfeervol ingerichte kamer" loading="lazy" /><figcaption>Het barnhouse</figcaption></figure>
-            <figure className="gallery-small reveal" data-reveal><img src={asset("breakfast.jpg")} alt="Ontbijt met koffie en croissants" loading="lazy" /><figcaption>De ochtend</figcaption></figure>
-            <figure className="gallery-wide reveal" data-reveal><img src={asset("hero.jpg")} alt="Groen landschap in de ochtend" loading="lazy" /><figcaption>3.000 m² buiten</figcaption></figure>
-          </div>
-        </section>
-
-        <section
-          id="kamers"
-          className="season-section summer-section"
-          data-season="1"
-          ref={(el) => { seasonRefs.current[1] = el; }}
-        >
-          <span className="season-anchor" id="season-summer" />
-          <div className="summer-heading reveal" data-reveal>
-            <p className="eyebrow">Zomer · Overnachten</p>
-            <h2>Een plek om<br /><em>tot rust te komen.</em></h2>
-          </div>
-          <article className="room-feature" id="overnachten">
-            <div className="room-image reveal" data-reveal><img src={asset("suite.jpg")} alt="Het lichte barnhouse van Het Berkenbos" loading="lazy" /></div>
-            <div className="room-copy reveal" data-reveal>
-              <span className="room-number">Het verblijf · 01</span>
-              <h3>Het Barnhouse</h3>
-              <p>Een warm, eigen verblijf met het groen direct buiten. Helemaal klaar voor een paar rustige dagen in Hauwert.</p>
-              <div className="room-meta"><span>Prijs op aanvraag</span><a href={instagram} target="_blank" rel="noreferrer">Bekijk het verblijf ↗</a></div>
-            </div>
-          </article>
-
-          <div className="inline-booking reveal" id="boeken" data-reveal>
-            <div><p className="eyebrow">Direct beschikbaar?</p><h3>Wanneer wil je komen?</h3></div>
-            <BookingForm compact />
-          </div>
-        </section>
-
-        <section
-          id="omgeving"
-          className="season-section autumn-section"
-          data-season="2"
-          ref={(el) => { seasonRefs.current[2] = el; }}
-        >
-          <span className="season-anchor" id="season-autumn" />
-          <div className="autumn-intro reveal" data-reveal>
-            <p className="eyebrow">Herfst · De omgeving</p>
-            <h2>Elk seizoen heeft hier<br /><em>iets bijzonders.</em></h2>
-            <p>Ontdek West-Friesland op je eigen tempo — of blijf juist lekker dicht bij huis.</p>
-          </div>
-          <div className="experiences">
-            <article className="experience reveal" data-reveal><span>01</span><div><h3>Naar buiten</h3><p>Wandelen en fietsen langs open land en stille wegen.</p></div></article>
-            <article className="experience reveal" data-reveal><span>02</span><div><h3>Om je heen kijken</h3><p>Dorpjes, lokale adressen en het echte Noord-Holland.</p></div></article>
-            <article className="experience reveal" data-reveal><span>03</span><div><h3>Nergens heen</h3><p>Een plek in de tuin. Verder hoeft er niets.</p></div></article>
-          </div>
-          <figure className="autumn-image reveal" data-reveal><img src={asset("hero.jpg")} alt="Het open Noord-Hollandse landschap" loading="lazy" /></figure>
-        </section>
-
-        <section
-          className="season-section winter-section"
-          data-season="3"
-          ref={(el) => { seasonRefs.current[3] = el; }}
-        >
-          <span className="season-anchor" id="season-winter" />
-          <div className="review-wrap reveal" data-reveal>
-            <p className="eyebrow">Gasten over Het Berkenbos</p>
-            <blockquote>“Een heerlijke plek om echt even <em>tot rust te komen.</em>”</blockquote>
-            <div className="review-meta"><span aria-label="5 van 5 sterren">★★★★★</span><i>Een verblijf om te onthouden</i></div>
-          </div>
-        </section>
-      </div>
-
-      <section className="closing-section" id="contact">
-        <div className="closing-image" style={{ backgroundImage: `linear-gradient(90deg, rgba(9,15,11,.78), rgba(9,15,11,.25)), linear-gradient(0deg, rgba(9,15,11,.58), transparent 50%), url("${asset("hero.jpg")}")` }} aria-hidden="true" />
-        <div className="closing-content reveal" data-reveal>
-          <p className="eyebrow">Winter · Rust</p>
-          <h2>Soms hoef je even<br /><em>helemaal niets.</em></h2>
-          <p>Het hele jaar door is Het Berkenbos een plek om weg te zijn — en je toch meteen thuis te voelen.</p>
-          <a className="button button-light" href={instagram} target="_blank" rel="noreferrer">Boek je verblijf <span>↗</span></a>
+        <div className="season-scenes">
+          {seasons.map((season, index) => (
+            <article key={season.id} id={season.id} className="season-scene" data-season={index} ref={(element) => { seasonRefs.current[index] = element; }}>
+              <div className="season-card" data-reveal>
+                <div className="season-meta"><span>{season.number} / 04</span><span>{season.note}</span></div>
+                <p>{season.lead}</p>
+                <h2>{season.title.split("\n").map((line, lineIndex) => <span key={line}>{lineIndex === 1 ? <em>{line}</em> : line}</span>)}</h2>
+                <div className="season-bottom"><p>{season.detail}</p><a href="#boeken" aria-label={`Boek een verblijf in de ${season.id}`}>Kom dit seizoen <Arrow /></a></div>
+              </div>
+            </article>
+          ))}
         </div>
-        <div className="closing-question">Wanneer kom jij tot rust?</div>
+      </section>
+
+      <section className="stay" id="verblijf">
+        <div className="stay-heading" data-reveal><span>01 / Het verblijf</span><h2>Gemaakt om<br /><em>langer te blijven.</em></h2><p>Een ruim en warm barnhouse, met alles voor een paar dagen op je eigen tempo.</p></div>
+        <div className="stay-visual" data-reveal><img src={asset("suite.jpg")} alt="De ruime slaapkamer van Het Berkenbos" /><div className="stay-stamp"><span>Eigen verblijf</span><strong>2–4</strong><span>gasten</span></div></div>
+        <div className="stay-specs">
+          <div><span>01</span><p>Vrijstaand<br />barnhouse</p></div><div><span>02</span><p>3.000 m²<br />tuin &amp; bos</p></div><div><span>03</span><p>Ontbijt op<br />eigen tempo</p></div><div><span>04</span><p>Rust in<br />West-Friesland</p></div>
+        </div>
+      </section>
+
+      <section className="rhythm" id="omgeving">
+        <div className="rhythm-intro"><span>02 / Jouw ritme</span><h2>Van eerste licht<br />tot <em>niets meer hoeven.</em></h2></div>
+        <div className="rhythm-track">
+          <article data-reveal><div className="rhythm-image"><img src={asset("breakfast.jpg")} alt="Een rustig ontbijt buiten" /></div><span>08:12</span><h3>De ochtend</h3><p>Koffie, iets vers en alle tijd om te bedenken wat de dag mag worden.</p></article>
+          <article data-reveal><div className="rhythm-image"><img src={asset("hero.jpg")} alt="Het open landschap rond Hauwert" /></div><span>14:36</span><h3>Naar buiten</h3><p>Fietsen langs open land, kleine dorpen en de horizon van West-Friesland.</p></article>
+          <article data-reveal><div className="rhythm-image"><img src={asset("suite.jpg")} alt="Terugkomen in het barnhouse" /></div><span>20:41</span><h3>Weer thuis</h3><p>Het laatste licht, een lange avond en een plek die helemaal van jou voelt.</p></article>
+        </div>
+      </section>
+
+      <section className="quote">
+        <span>Een verblijf om te onthouden</span>
+        <blockquote data-reveal>“Hier wordt zelfs een lege dag<br /><em>iets bijzonders.</em>”</blockquote>
+        <div><span aria-label="Vijf van vijf sterren">★★★★★</span><p>Rustig · Persoonlijk · Midden in het groen</p></div>
+      </section>
+
+      <section className="book" id="boeken">
+        <div className="book-background" style={{ backgroundImage: `url("${asset("hero.jpg")}")` }} aria-hidden="true" />
+        <div className="book-copy" data-reveal><span>Jouw verblijf</span><h2>Wanneer kom jij<br /><em>tot rust?</em></h2><p>Kies je data. Wij nemen daarna persoonlijk contact met je op.</p></div>
+        <div className="book-form" data-reveal><BookingForm /><p>Of stuur direct een bericht via <a href={instagram} target="_blank" rel="noreferrer">Instagram <Arrow /></a></p></div>
       </section>
 
       <footer>
-        <img src={asset("berkenbos-logo-white.png")} alt="B&B Het Berkenbos" />
-        <div><span>Bed &amp; Barn</span><span>Hauwert · Noord-Holland</span><a href={instagram} target="_blank" rel="noreferrer">Instagram ↗</a></div>
-        <p>© {new Date().getFullYear()} Het Berkenbos</p>
+        <div className="footer-top"><img src={asset("berkenbos-logo-white.png")} alt="B&B Het Berkenbos" /><p>Een plek voor alle seizoenen.</p></div>
+        <div className="footer-grid"><div><span>Adres</span><p>Hauwert<br />Noord-Holland</p></div><div><span>Volg</span><a href={instagram} target="_blank" rel="noreferrer">Instagram <Arrow /></a></div><div><span>Ontdek</span><a href="#verblijf">Het verblijf</a><a href="#seizoenen">Vier seizoenen</a><a href="#omgeving">De omgeving</a></div><a className="footer-book" href="#boeken">Boek je rust <Arrow /></a></div>
+        <div className="footer-bottom"><span>© {new Date().getFullYear()} Het Berkenbos</span><span>Bed &amp; Barn · Hauwert</span></div>
       </footer>
-
-      <a className={`mobile-booking-bar${showMobileBooking ? " is-visible" : ""}`} href="#boeken">Bekijk beschikbaarheid <span>→</span></a>
     </main>
   );
 }

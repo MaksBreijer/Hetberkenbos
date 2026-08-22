@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "B&B Het Berkenbos",
-    description: "Even helemaal weg.",
+    description: "Vier seizoenen. Eén plek.",
     type: "website",
     locale: "nl_NL",
-    images: ["/og.png"],
+    images: ["/og-v2.png"],
   },
 };
 
