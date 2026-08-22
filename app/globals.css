@@ -30,11 +30,11 @@ em { font-style: normal; }
 .progress { position: fixed; z-index: 100; inset: 0 0 auto; height: 2px; background: rgba(255,255,255,.16); }
 .progress i { display: block; width: 100%; height: 100%; background: #fff; transform-origin: left; }
 
-header { position: fixed; z-index: 60; inset: 0 0 auto; height: 108px; padding: 0 var(--page); display: grid; grid-template-columns: 190px 1fr auto; align-items: center; gap: 4vw; color: #fff; border-bottom: 1px solid rgba(255,255,255,.26); transition: height .35s ease, background .35s ease; }
-header.compact { height: 76px; background: rgba(12,23,24,.96); }
-.logo { width: 166px; height: 86px; display: grid; place-items: center; transition: width .35s ease, height .35s ease; }
+header { position: fixed; z-index: 60; inset: 0 0 auto; height: 128px; padding: 0 var(--page); display: grid; grid-template-columns: 210px 1fr auto; align-items: center; gap: 4vw; color: #fff; border-bottom: 1px solid rgba(255,255,255,.26); transition: height .35s ease, background .35s ease; }
+header.compact { height: 86px; background: rgba(12,23,24,.96); }
+.logo { width: 174px; height: 82px; display: grid; place-items: center; transition: width .35s ease, height .35s ease; }
 .logo img { height: 100%; object-fit: contain; }
-header.compact .logo { width: 130px; height: 64px; }
+header.compact .logo { width: 136px; height: 62px; }
 .main-nav { justify-self: center; display: flex; gap: clamp(22px, 2.6vw, 44px); }
 .main-nav a, .nav-book { font-family: var(--sans); font-size: 9px; font-weight: 650; line-height: 1; letter-spacing: .14em; text-transform: uppercase; }
 .main-nav a { position: relative; padding: 10px 0; }
@@ -47,7 +47,7 @@ header.compact .logo { width: 130px; height: 64px; }
 .hero-media { position: absolute; inset: -4%; background-position: center; background-size: cover; animation: hero-breathe 18s ease-in-out infinite alternate; }
 @keyframes hero-breathe { from { transform: scale(1.02); } to { transform: scale(1.08); } }
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7,14,14,.68), rgba(7,14,14,.08) 68%), linear-gradient(0deg, rgba(7,14,14,.62), transparent 58%); }
-.hero-kicker { position: absolute; z-index: 2; top: 150px; left: var(--page); right: var(--page); display: flex; justify-content: space-between; font-size: 9px; font-weight: 650; letter-spacing: .16em; text-transform: uppercase; }
+.hero-kicker { position: absolute; z-index: 2; top: 172px; left: var(--page); right: var(--page); display: flex; justify-content: space-between; font-size: 9px; font-weight: 650; letter-spacing: .16em; text-transform: uppercase; }
 .hero-title { position: absolute; z-index: 2; left: var(--page); right: var(--page); bottom: 170px; }
 .hero-title > p { margin: 0 0 24px; font-size: 9px; font-weight: 650; letter-spacing: .19em; text-transform: uppercase; }
 .hero h1 { max-width: 1320px; margin: 0; font-family: var(--display); font-size: clamp(78px, 9.3vw, 148px); line-height: .82; letter-spacing: -.055em; font-weight: 600; }
@@ -187,15 +187,15 @@ footer { padding: 85px var(--page) 28px; background: var(--ink); color: #e3e8e4;
 
 @media (max-width: 1050px) {
   :root { --page: 24px; }
-  header { height: 94px; padding: 0 24px; grid-template-columns: 1fr auto; }
-  header.compact { height: 74px; }
-  .logo { width: 108px; height: 58px; }
-  header.compact .logo { width: 94px; height: 48px; }
+  header { height: 112px; padding: 0 24px; grid-template-columns: 1fr auto; }
+  header.compact { height: 82px; }
+  .logo { width: 116px; height: 56px; }
+  header.compact .logo { width: 96px; height: 44px; }
   .main-nav, .nav-book { display: none; }
   .menu-button { position: relative; z-index: 63; padding: 12px 0; display: flex; gap: 14px; align-items: center; border: 0; background: transparent; color: #fff; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
   .menu-button i { width: 22px; height: 1px; background: currentColor; box-shadow: 0 6px currentColor; }.open .menu-button i { transform: rotate(45deg); box-shadow: none; }.open .menu-button i::after { content: ""; display: block; width: 22px; height: 1px; background: currentColor; transform: rotate(90deg); }
   .mobile-menu { position: fixed; z-index: 62; inset: 0; padding: 120px 22px 60px; display: block; background: var(--ink); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease; }.open .mobile-menu { opacity: 1; visibility: visible; }.mobile-menu nav { display: flex; flex-direction: column; }.mobile-menu a { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.18); font-family: var(--serif); font-size: 42px; }
-  .hero { height: 900px; }.hero-kicker { top: 115px; left: 22px; right: 22px; }.hero-title { left: 22px; bottom: 245px; }.hero h1 { font-size: clamp(64px, 10vw, 96px); }.hero h1 em { margin-left: .2em; }.hero-discover { display: none; }.hero-booking { left: 22px; right: 22px; bottom: 24px; }.booking { grid-template-columns: 1fr 1fr; }.booking label { padding: 13px 14px; }.booking label:nth-child(3), .booking button { border-top: 1px solid var(--line); }.booking button { min-height: 58px; }
+  .hero { height: 900px; }.hero-kicker { top: 136px; left: 22px; right: 22px; }.hero-title { left: 22px; bottom: 245px; }.hero h1 { font-size: clamp(64px, 10vw, 96px); }.hero h1 em { margin-left: .2em; }.hero-discover { display: none; }.hero-booking { left: 22px; right: 22px; bottom: 24px; }.booking { grid-template-columns: 1fr 1fr; }.booking label { padding: 13px 14px; }.booking label:nth-child(3), .booking button { border-top: 1px solid var(--line); }.booking button { min-height: 58px; }
   .intro { padding: 110px 22px 130px; }.intro-copy { width: 100%; }.intro-copy > div { width: 80%; }.intro-images { height: 660px; margin-top: 100px; }.intro-images figure:first-child { width: 83%; height: 500px; }.intro-images figure:nth-child(2) { width: 43%; height: 370px; }.intro-images > span { display: none; }
   .season-nav { display: none; }.tree-orbit { left: 12%; width: 60vw; --radius: 28vw; }.orbit-tree-inner { width: min(26vw, 280px); height: min(56vh, 560px); }.tree-caption { right: 50%; }.season-scene { padding-left: 48%; padding-right: 22px; }.season-card { padding: 36px 30px; }.season-bottom { grid-template-columns: 1fr; }
   .stay { padding: 120px 22px 80px; }.stay-heading { grid-template-columns: 1fr 2fr; }.stay-heading p { grid-column: 2; }.stay-visual { margin-top: 75px; }.stay-specs { grid-template-columns: 1fr 1fr; }.stay-specs > div { min-height: 145px; border-bottom: 1px solid rgba(255,255,255,.18); }
@@ -205,10 +205,11 @@ footer { padding: 85px var(--page) 28px; background: var(--ink); color: #e3e8e4;
 
 @media (max-width: 700px) {
   :root { --page: 22px; --section-space: 105px; }
-  header { height: 94px; padding: 0 22px; }
-  header.compact { height: 72px; }
-  .logo { width: 102px; height: 52px; }
-  header.compact .logo { width: 90px; height: 44px; }
+  header { height: 104px; padding: 0 22px; }
+  header.compact { height: 78px; }
+  .logo { width: 102px; height: 48px; }
+  header.compact .logo { width: 90px; height: 40px; }
+  .hero-kicker { top: 128px; }
   .hero { min-height: 760px; height: 100svh; }.hero-media { background-position: 58% center; }.hero-kicker span:last-child { display: none; }.hero-title { bottom: 228px; }.hero-title > p { width: 220px; line-height: 1.45; }.hero h1 { font-size: clamp(43px, 12vw, 64px); line-height: .87; }.hero-booking { bottom: 14px; }.booking label { min-height: 60px; }.booking input, .booking select { font-size: 12px; }.booking button { font-size: 8px; }
   .intro { padding-top: 90px; }.intro-copy { display: block; }.intro h2, .stay-heading h2, .rhythm-intro h2 { font-size: clamp(43px, 12vw, 64px); }.intro-copy > div { width: 100%; grid-template-columns: 1fr; }.intro-copy > div p { font-size: 16px; }.intro-copy a { width: fit-content; }.intro-images { min-height: 0; height: 540px; margin-top: 80px; }.intro-images figure:first-child { width: 92%; height: 390px; }.intro-images figure:nth-child(2) { width: 53%; height: 290px; border-width: 9px; }
   .season-journey { min-height: 400svh; }.season-stage { height: 100svh; }.tree-orbit { left: 6%; top: 29%; width: 92vw; --radius: 42vw; }.orbit-tree-inner { width: 46vw; height: 44svh; }.orbit-tree:not(.active) .orbit-tree-inner { transform: translate(-50%, -50%) rotate(var(--upright-turn)) scale(.43); }.orbit-ring-inner { display: none; }.tree-caption { display: none; }.season-scenes { margin-top: -100svh; }.season-scene { min-height: 100svh; padding: 45svh 14px 18px; align-items: end; }.season-card { max-width: none; padding: 27px 22px 24px; }.season-card > p { margin: 28px 0 18px; font-size: 15px; }.season-card h2 { font-size: clamp(42px, 11.5vw, 60px); }.season-bottom { margin-top: 30px; padding-top: 17px; grid-template-columns: 1fr auto; gap: 15px; }.season-bottom p { font-size: 12px; }.season-bottom a { font-size: 7px; }
