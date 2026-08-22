@@ -1,5 +1,7 @@
 "use client";
 
+import "@fontsource-variable/syne";
+import "@fontsource-variable/manrope";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 
