@@ -184,9 +184,11 @@ footer { padding: 85px 3.2vw 28px; background: var(--ink); color: #e3e8e4; }
 [data-reveal].visible { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 1050px) {
-  header { height: 82px; padding: 0 22px; grid-template-columns: 1fr auto; }
-  header.compact { height: 68px; }
-  .logo { width: 128px; height: 68px; }.main-nav, .nav-book { display: none; }
+  header { height: 94px; padding: 0 24px; grid-template-columns: 1fr auto; }
+  header.compact { height: 74px; }
+  .logo { width: 108px; height: 58px; }
+  header.compact .logo { width: 94px; height: 48px; }
+  .main-nav, .nav-book { display: none; }
   .menu-button { position: relative; z-index: 63; padding: 12px 0; display: flex; gap: 14px; align-items: center; border: 0; background: transparent; color: #fff; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
   .menu-button i { width: 22px; height: 1px; background: currentColor; box-shadow: 0 6px currentColor; }.open .menu-button i { transform: rotate(45deg); box-shadow: none; }.open .menu-button i::after { content: ""; display: block; width: 22px; height: 1px; background: currentColor; transform: rotate(90deg); }
   .mobile-menu { position: fixed; z-index: 62; inset: 0; padding: 120px 22px 60px; display: block; background: var(--ink); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease; }.open .mobile-menu { opacity: 1; visibility: visible; }.mobile-menu nav { display: flex; flex-direction: column; }.mobile-menu a { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.18); font-family: var(--serif); font-size: 42px; }
@@ -199,6 +201,10 @@ footer { padding: 85px 3.2vw 28px; background: var(--ink); color: #e3e8e4; }
 }
 
 @media (max-width: 700px) {
+  header { height: 94px; padding: 0 22px; }
+  header.compact { height: 72px; }
+  .logo { width: 102px; height: 52px; }
+  header.compact .logo { width: 90px; height: 44px; }
   .hero { min-height: 760px; height: 100svh; }.hero-media { background-position: 58% center; }.hero-kicker span:last-child { display: none; }.hero-title { bottom: 228px; }.hero-title > p { width: 220px; line-height: 1.45; }.hero h1 { font-size: clamp(64px, 19vw, 92px); line-height: .83; }.hero-booking { bottom: 14px; }.booking label { min-height: 60px; }.booking input, .booking select { font-size: 12px; }.booking button { font-size: 8px; }
   .intro { padding-top: 90px; }.intro h2, .stay-heading h2, .rhythm-intro h2 { font-size: clamp(56px, 16vw, 82px); }.intro-copy > div { width: 100%; grid-template-columns: 1fr; }.intro-copy > div p { font-size: 16px; }.intro-copy a { width: fit-content; }.intro-images { height: 540px; margin-top: 80px; }.intro-images figure:first-child { width: 92%; height: 390px; }.intro-images figure:nth-child(2) { width: 53%; height: 290px; border-width: 9px; }
   .season-journey { min-height: 400svh; }.season-stage { height: 100svh; }.tree-orbit { left: 6%; top: 29%; width: 92vw; --radius: 42vw; }.orbit-tree-inner { width: 46vw; height: 44svh; }.orbit-tree:not(.active) .orbit-tree-inner { transform: translate(-50%, -50%) rotate(var(--upright-turn)) scale(.43); }.orbit-ring-inner { display: none; }.tree-caption { display: none; }.season-scenes { margin-top: -100svh; }.season-scene { min-height: 100svh; padding: 45svh 14px 18px; align-items: end; }.season-card { max-width: none; padding: 27px 22px 24px; }.season-card > p { margin: 28px 0 18px; font-size: 15px; }.season-card h2 { font-size: clamp(50px, 14vw, 72px); }.season-bottom { margin-top: 30px; padding-top: 17px; grid-template-columns: 1fr auto; gap: 15px; }.season-bottom p { font-size: 12px; }.season-bottom a { font-size: 7px; }
