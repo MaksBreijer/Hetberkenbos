@@ -6,6 +6,7 @@ import type { FormEvent } from "react";
 const instagram = "https://www.instagram.com/hetberkenbos/";
 const seasons = ["Lente", "Zomer", "Herfst", "Winter"];
 const seasonAssets = ["spring", "summer", "autumn", "winter"];
+const asset = (name: string) => `${import.meta.env.BASE_URL}${name}`;
 
 function BookingForm({ compact = false }: { compact?: boolean }) {
   const today = new Date().toISOString().split("T")[0];
@@ -104,7 +105,7 @@ export default function Home() {
 
       <header className={`site-header${menuOpen ? " menu-open" : ""}${headerCompact ? " is-compact" : ""}`}>
         <a className="brand-logo" href="#top" aria-label="Het Berkenbos, naar boven">
-          <img src="/berkenbos-logo-white.png" alt="B&B Het Berkenbos" />
+          <img src={asset("berkenbos-logo-white.png")} alt="B&B Het Berkenbos" />
         </a>
         <nav className="desktop-nav" aria-label="Hoofdnavigatie">
           <a href="#overnachten">Overnachten</a><a href="#kamers">Kamers</a><a href="#omgeving">Omgeving</a><a href="#verhaal">Het Berkenbos</a><a href="#contact">Contact</a>
@@ -121,7 +122,7 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top">
-        <div className="hero-image" style={{ transform: `translate3d(0, ${heroOffset}px, 0) scale(1.08)` }} aria-hidden="true" />
+        <div className="hero-image" style={{ backgroundImage: `url("${asset("hero.jpg")}")`, transform: `translate3d(0, ${heroOffset}px, 0) scale(1.08)` }} aria-hidden="true" />
         <div className="hero-shade" aria-hidden="true" />
         <div className="hero-content">
           <p className="eyebrow">Bed &amp; Barn · Hauwert</p>
@@ -154,7 +155,7 @@ export default function Home() {
                   key={season}
                   className={activeSeason === index ? "active" : ""}
                   style={{ opacity: treeOpacity(index) }}
-                  src={`/tree-${seasonAssets[index]}.png`}
+                  src={asset(`tree-${seasonAssets[index]}.png`)}
                   alt=""
                 />
               ))}
@@ -190,9 +191,9 @@ export default function Home() {
             <p>In Hauwert staat een barnhouse met een tuin van 3.000 m² en een klein bos van zilverberken. Een plek waar de ochtend zacht begint en niets haast heeft.</p>
           </div>
           <div className="spring-gallery" aria-label="Sfeerbeelden van Het Berkenbos">
-            <figure className="gallery-main reveal" data-reveal><img src="/suite.jpg" alt="Sfeervol ingerichte kamer" loading="lazy" /><figcaption>Het barnhouse</figcaption></figure>
-            <figure className="gallery-small reveal" data-reveal><img src="/breakfast.jpg" alt="Ontbijt met koffie en croissants" loading="lazy" /><figcaption>De ochtend</figcaption></figure>
-            <figure className="gallery-wide reveal" data-reveal><img src="/hero.jpg" alt="Groen landschap in de ochtend" loading="lazy" /><figcaption>3.000 m² buiten</figcaption></figure>
+            <figure className="gallery-main reveal" data-reveal><img src={asset("suite.jpg")} alt="Sfeervol ingerichte kamer" loading="lazy" /><figcaption>Het barnhouse</figcaption></figure>
+            <figure className="gallery-small reveal" data-reveal><img src={asset("breakfast.jpg")} alt="Ontbijt met koffie en croissants" loading="lazy" /><figcaption>De ochtend</figcaption></figure>
+            <figure className="gallery-wide reveal" data-reveal><img src={asset("hero.jpg")} alt="Groen landschap in de ochtend" loading="lazy" /><figcaption>3.000 m² buiten</figcaption></figure>
           </div>
         </section>
 
@@ -208,7 +209,7 @@ export default function Home() {
             <h2>Een plek om<br /><em>tot rust te komen.</em></h2>
           </div>
           <article className="room-feature" id="overnachten">
-            <div className="room-image reveal" data-reveal><img src="/suite.jpg" alt="Het lichte barnhouse van Het Berkenbos" loading="lazy" /></div>
+            <div className="room-image reveal" data-reveal><img src={asset("suite.jpg")} alt="Het lichte barnhouse van Het Berkenbos" loading="lazy" /></div>
             <div className="room-copy reveal" data-reveal>
               <span className="room-number">Het verblijf · 01</span>
               <h3>Het Barnhouse</h3>
@@ -240,7 +241,7 @@ export default function Home() {
             <article className="experience reveal" data-reveal><span>02</span><div><h3>Om je heen kijken</h3><p>Dorpjes, lokale adressen en het echte Noord-Holland.</p></div></article>
             <article className="experience reveal" data-reveal><span>03</span><div><h3>Nergens heen</h3><p>Een plek in de tuin. Verder hoeft er niets.</p></div></article>
           </div>
-          <figure className="autumn-image reveal" data-reveal><img src="/hero.jpg" alt="Het open Noord-Hollandse landschap" loading="lazy" /></figure>
+          <figure className="autumn-image reveal" data-reveal><img src={asset("hero.jpg")} alt="Het open Noord-Hollandse landschap" loading="lazy" /></figure>
         </section>
 
         <section
@@ -258,7 +259,7 @@ export default function Home() {
       </div>
 
       <section className="closing-section" id="contact">
-        <div className="closing-image" aria-hidden="true" />
+        <div className="closing-image" style={{ backgroundImage: `linear-gradient(90deg, rgba(9,15,11,.78), rgba(9,15,11,.25)), linear-gradient(0deg, rgba(9,15,11,.58), transparent 50%), url("${asset("hero.jpg")}")` }} aria-hidden="true" />
         <div className="closing-content reveal" data-reveal>
           <p className="eyebrow">Winter · Rust</p>
           <h2>Soms hoef je even<br /><em>helemaal niets.</em></h2>
@@ -269,7 +270,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <img src="/berkenbos-logo-white.png" alt="B&B Het Berkenbos" />
+        <img src={asset("berkenbos-logo-white.png")} alt="B&B Het Berkenbos" />
         <div><span>Bed &amp; Barn</span><span>Hauwert · Noord-Holland</span><a href={instagram} target="_blank" rel="noreferrer">Instagram ↗</a></div>
         <p>© {new Date().getFullYear()} Het Berkenbos</p>
       </footer>
