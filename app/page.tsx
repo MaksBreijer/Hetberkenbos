@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { FormEvent } from "react";
+import type { CSSProperties, FormEvent } from "react";
 
 const instagram = "https://www.instagram.com/hetberkenbos/";
 const asset = (name: string) => `${import.meta.env.BASE_URL}${name}`;
@@ -143,13 +143,26 @@ export default function Home() {
       <section className="season-journey" id="seizoenen">
         <div className="season-stage" aria-hidden="true">
           <div className="season-sky"><i className="sky spring" /><i className="sky summer" /><i className="sky autumn" /><i className="sky winter" /></div>
-          <div className="tree-frame">
-            {seasons.map((season, index) => <img key={season.id} className={activeSeason === index ? "active" : ""} src={asset(`tree-${season.asset}.png`)} alt="" />)}
+          <div className="tree-orbit" style={{ "--orbit-turn": `${activeSeason * -90}deg` } as CSSProperties}>
+            <i className="orbit-ring" />
+            <i className="orbit-ring orbit-ring-inner" />
+            {seasons.map((season, index) => (
+              <div
+                key={season.id}
+                className={`orbit-tree${activeSeason === index ? " active" : ""}`}
+                style={{ "--slot-angle": `${index * 90}deg` } as CSSProperties}
+              >
+                <div className="orbit-tree-inner" style={{ "--upright-turn": `${activeSeason * 90 - index * 90}deg` } as CSSProperties}>
+                  <img src={asset(`tree-${season.asset}.png`)} alt="" />
+                  <span>{season.number} · {season.id}</span>
+                </div>
+              </div>
+            ))}
           </div>
           <div className="season-weather">
             {seasons.map((season, index) => <div key={season.id} className={`weather weather-${season.asset}${activeSeason === index ? " active" : ""}`}>{Array.from({ length: 14 }).map((_, item) => <i key={item} />)}</div>)}
           </div>
-          <div className="tree-caption"><span>Dezelfde berk</span><span>Een ander gevoel</span></div>
+          <div className="tree-caption"><span>Scroll door het jaar</span><span>Vier seizoenen · één berk</span></div>
         </div>
 
         <nav className="season-nav" aria-label="Kies een seizoen">

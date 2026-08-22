@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: "Vier seizoenen. Eén plek.",
     type: "website",
     locale: "nl_NL",
-    images: ["/og-v2.png"],
+    images: ["/og-v3.png"],
   },
 };
 

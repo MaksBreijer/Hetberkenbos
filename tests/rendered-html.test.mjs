@@ -30,7 +30,7 @@ test("server-renders the complete Het Berkenbos experience", async () => {
   assert.match(html, /tree-spring\.png/);
   assert.match(html, /berkenbos-logo-white\.png/);
   assert.match(html, /Vraag je verblijf aan/);
-  assert.match(html, /og-v2\.png/);
+  assert.match(html, /og-v3\.png/);
   assert.doesNotMatch(html, /codex-preview|Building your site|react-loading-skeleton/i);
 });
 
@@ -47,7 +47,8 @@ test("keeps the seasonal interaction responsive and accessible", async () => {
   assert.match(page, /tree-\$\{season\.asset\}\.png/);
   assert.match(css, /@media \(max-width: 700px\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(css, /\.tree-frame/);
+  assert.match(css, /\.tree-orbit/);
+  assert.match(css, /--orbit-turn/);
   assert.match(layout, /Vier seizoenen\. Eén plek\./);
-  assert.match(layout, /og-v2\.png/);
+  assert.match(layout, /og-v3\.png/);
 });
