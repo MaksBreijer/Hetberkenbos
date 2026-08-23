@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://maksbreijer.github.io/Hetberkenbos/"),
   title: "B&B Het Berkenbos | Overnachten in Hauwert",
-  description: "Kom op adem bij B&B Het Berkenbos in Hauwert. Een kleinschalig en persoonlijk verblijf in het West-Friese landschap.",
+  description: "Een eigen barnhouse tussen 3.000 m² tuin en bos in Hauwert. Vier seizoenen, alle tijd en ruimte voor twee tot vier gasten.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
@@ -13,7 +14,14 @@ export const metadata: Metadata = {
     description: "Vier seizoenen. Eén plek.",
     type: "website",
     locale: "nl_NL",
-    images: ["/og-v3.png"],
+    url: "https://maksbreijer.github.io/Hetberkenbos/",
+    images: ["og.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "B&B Het Berkenbos",
+    description: "Vier seizoenen. Eén plek.",
+    images: ["og.png"],
   },
 };
 

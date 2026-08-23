@@ -21,8 +21,8 @@ test("server-renders the complete Het Berkenbos experience", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>B&amp;B Het Berkenbos \| Overnachten in Hauwert<\/title>/i);
+  assert.match(html, /Hier hoef je/);
   assert.match(html, /Vier seizoenen/);
-  assert.match(html, /Eén plek\./);
   assert.match(html, /id="lente"/);
   assert.match(html, /id="zomer"/);
   assert.match(html, /id="herfst"/);
@@ -30,7 +30,7 @@ test("server-renders the complete Het Berkenbos experience", async () => {
   assert.match(html, /tree-spring\.png/);
   assert.match(html, /berkenbos-logo-white\.png/);
   assert.match(html, /Vraag je verblijf aan/);
-  assert.match(html, /og-v3\.png/);
+  assert.match(html, /og\.png/);
   assert.doesNotMatch(html, /codex-preview|Building your site|react-loading-skeleton/i);
 });
 
@@ -47,8 +47,8 @@ test("keeps the seasonal interaction responsive and accessible", async () => {
   assert.match(page, /tree-\$\{season\.asset\}\.png/);
   assert.match(css, /@media \(max-width: 700px\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(css, /\.tree-orbit/);
-  assert.match(css, /--orbit-turn/);
+  assert.match(css, /\.season-tree-stack/);
+  assert.match(css, /\.season-surfaces/);
   assert.match(layout, /Vier seizoenen\. Eén plek\./);
-  assert.match(layout, /og-v3\.png/);
+  assert.match(layout, /og\.png/);
 });
