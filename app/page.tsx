@@ -1,7 +1,7 @@
 "use client";
 
-import "@fontsource-variable/syne";
-import "@fontsource-variable/manrope";
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/instrument-sans";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 
@@ -77,6 +77,8 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [compactHeader, setCompactHeader] = useState(false);
   const seasonRefs = useRef<(HTMLElement | null)[]>([]);
+  const cursorRef = useRef<HTMLDivElement | null>(null);
+  const heroRef = useRef<HTMLElement | null>(null);
   const currentSeason = seasons[activeSeason];
 
   useEffect(() => {
@@ -103,16 +105,52 @@ export default function Home() {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
 
+    const moveCursor = (event: PointerEvent) => {
+      if (cursorRef.current) cursorRef.current.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate(-50%, -50%)`;
+    };
+    const cursorOver = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      cursorRef.current?.classList.toggle("active", Boolean(target?.closest("a, button, figure, .moment")));
+    };
+    const moveHero = (event: PointerEvent) => {
+      const hero = heroRef.current;
+      if (!hero) return;
+      const bounds = hero.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width - .5;
+      const y = (event.clientY - bounds.top) / bounds.height - .5;
+      hero.style.setProperty("--hero-x", `${x * 18}px`);
+      hero.style.setProperty("--hero-y", `${y * 13}px`);
+      hero.style.setProperty("--copy-x", `${x * 12}px`);
+      hero.style.setProperty("--copy-y", `${y * 7}px`);
+    };
+    const resetHero = () => {
+      const hero = heroRef.current;
+      if (!hero) return;
+      hero.style.setProperty("--hero-x", "0px");
+      hero.style.setProperty("--hero-y", "0px");
+      hero.style.setProperty("--copy-x", "0px");
+      hero.style.setProperty("--copy-y", "0px");
+    };
+    window.addEventListener("pointermove", moveCursor, { passive: true });
+    document.addEventListener("pointerover", cursorOver, { passive: true });
+    heroRef.current?.addEventListener("pointermove", moveHero, { passive: true });
+    heroRef.current?.addEventListener("pointerleave", resetHero);
+
     return () => {
       revealObserver.disconnect();
       seasonObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", moveCursor);
+      document.removeEventListener("pointerover", cursorOver);
+      heroRef.current?.removeEventListener("pointermove", moveHero);
+      heroRef.current?.removeEventListener("pointerleave", resetHero);
     };
   }, []);
 
   return (
     <main className={`site season-${activeSeason}`} style={{ "--page-progress": progress } as CSSProperties}>
       <div className="progress" aria-hidden="true"><i style={{ transform: `scaleX(${progress})` }} /></div>
+      <div className="cursor-orb" ref={cursorRef} aria-hidden="true" />
 
       <header className={`${compactHeader ? "compact " : ""}${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#top" aria-label="B&B Het Berkenbos, naar boven"><img src={asset("berkenbos-logo-white.png")} alt="B&B Het Berkenbos" /></a>
@@ -124,7 +162,7 @@ export default function Home() {
         <div className="mobile-menu" id="mobile-menu" aria-hidden={!menuOpen}><nav><a href="#verblijf" onClick={() => setMenuOpen(false)}>Het verblijf</a><a href="#seizoenen" onClick={() => setMenuOpen(false)}>Vier seizoenen</a><a href="#ritme" onClick={() => setMenuOpen(false)}>Hauwert</a><a href="#boeken" onClick={() => setMenuOpen(false)}>Boeken</a></nav></div>
       </header>
 
-      <section className="hero" id="top">
+      <section className="hero" id="top" ref={heroRef}>
         <div className="hero-media" style={{ backgroundImage: `url("${asset("hero.jpg")}")` }} aria-hidden="true" />
         <div className="hero-shade" aria-hidden="true" />
         <div className="hero-coordinate"><span>52°42&apos;N</span><span>05°06&apos;E</span></div>
@@ -141,10 +179,12 @@ export default function Home() {
         <div className="manifesto-grid">
           <h2 data-reveal>Hier hoef je<br />even helemaal<br /><em>nergens heen.</em></h2>
           <div className="manifesto-copy" data-reveal><p>Geen hotelgang. Geen druk programma. Wel een vrijstaand barnhouse, 3.000 m² groen en het soort stilte dat je pas hoort wanneer je aankomt.</p><a href="#verblijf">Ontdek het verblijf <Arrow /></a></div>
-          <figure className="manifesto-image" data-reveal><img src={asset("suite.jpg")} alt="Het rustige interieur van het barnhouse" /><figcaption><span>Eigen entree</span><span>Eigen ritme</span></figcaption></figure>
+          <figure className="manifesto-image" data-reveal><img src={asset("suite.jpg")} alt="Het rustige interieur van het barnhouse" /><span className="image-hover">Bekijk</span><figcaption><span>Eigen entree</span><span>Eigen ritme</span></figcaption></figure>
           <p className="manifesto-whisper">Binnen warm.<br />Buiten dichtbij.</p>
         </div>
       </section>
+
+      <div className="ticker" aria-hidden="true"><div><span>Buiten begint hier</span><i>✦</i><span>Vier seizoenen</span><i>✦</i><span>Alle tijd</span><i>✦</i><span>Buiten begint hier</span><i>✦</i><span>Vier seizoenen</span><i>✦</i><span>Alle tijd</span><i>✦</i></div></div>
 
       <section className="season-story" id="seizoenen">
         <div className="season-stage">
@@ -176,7 +216,7 @@ export default function Home() {
       <section className="residence" id="verblijf">
         <div className="section-rail section-rail-light"><span>01</span><span>Het verblijf</span><span>2–4 gasten</span></div>
         <div className="residence-head" data-reveal><h2>Een huisje<br />dat van jullie<br /><em>voelt.</em></h2><p>Vrijstaand, ruim en warm. Ontworpen om binnen net zo graag te zijn als buiten.</p></div>
-        <figure className="residence-image" data-reveal><img src={asset("suite.jpg")} alt="De slaapkamer van B&B Het Berkenbos" /><div className="image-mark"><span>B&amp;B</span><strong>01</strong><span>Hauwert</span></div></figure>
+        <figure className="residence-image" data-reveal><img src={asset("suite.jpg")} alt="De slaapkamer van B&B Het Berkenbos" /><span className="image-hover image-hover-light">Verblijf</span><div className="image-mark"><span>B&amp;B</span><strong>01</strong><span>Hauwert</span></div></figure>
         <div className="residence-specs">
           <div><span>01</span><p>Vrijstaand<br />barnhouse</p></div>
           <div><span>02</span><p>3.000 m²<br />tuin &amp; bos</p></div>

@@ -42,6 +42,9 @@ test("keeps the seasonal interaction responsive and accessible", async () => {
   ]);
 
   assert.match(page, /IntersectionObserver/);
+  assert.match(page, /pointermove/);
+  assert.match(page, /cursor-orb/);
+  assert.match(page, /className="ticker"/);
   assert.match(page, /aria-label="Kies een seizoen"/);
   assert.match(page, /aria-expanded=\{menuOpen\}/);
   assert.match(page, /tree-\$\{season\.asset\}\.png/);
@@ -49,6 +52,8 @@ test("keeps the seasonal interaction responsive and accessible", async () => {
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /\.season-tree-stack/);
   assert.match(css, /\.season-surfaces/);
+  assert.match(css, /Bricolage Grotesque Variable/);
+  assert.match(css, /Instrument Sans Variable/);
   assert.match(layout, /Vier seizoenen\. Eén plek\./);
   assert.match(layout, /og\.png/);
 });
